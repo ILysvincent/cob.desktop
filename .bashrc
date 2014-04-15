@@ -5,8 +5,8 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
-# don't put duplicate lines in the history. See bash(1) for more options
-# ... or force ignoredups and ignorespace
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
 HISTCONTROL=ignoredups:ignorespace
 
 # append to the history file, don't overwrite it
@@ -19,6 +19,10 @@ HISTFILESIZE=2000
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
+
+# If set, the pattern "**" used in a pathname expansion context will
+# match all files and zero or more directories and subdirectories.
+#shopt -s globstar
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -36,7 +40,7 @@ esac
 # uncomment for a colored prompt, if the terminal has the capability; turned
 # off by default to not distract the user: the focus in a terminal window
 # should be on the output of commands, not on the prompt
-force_color_prompt=yes
+#force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
@@ -50,7 +54,7 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;31m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi
@@ -82,6 +86,10 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
@@ -98,18 +106,18 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
-# use global color settings
+#use global color settings
 source /etc/cob.bash.bashrc
 
-# provide setup scripts for all users
-export PATH=/u/robot/git/setup:$PATH
+#provide setup scripts for all users
+export PATH=/u/robot/git.setup:$PATH
 
-#source /opt/ros/groovy/setup.bash
-#source /u/robot/git/care-o-bot_catkin/devel/setup.bash
-#source /u/mig-ly/git/care-o-bot_catkin/devel/setup.bash
+source /opt/ros/groovy/setup.bash
+source /u/mig-ly/git/care-o-bot_catkin/devel/setup.bash
 export ROS_PACKAGE_PATH=/u/robot/git/care-o-bot:$ROS_PACKAGE_PATH
+source /u/robot/git/care-o-bot_catkin/devel/setup.bash
 export ROS_PACKAGE_PATH=~/git/care-o-bot:$ROS_PACKAGE_PATH
-export ROS_PACKAGE_PATH=~/git/care-o-bot_catkin/src:$ROS_PACKAGE_PATH
+#export ROS_PACKAGE_PATH=~/git/care-o-bot_catkin_src:$ROS_PACKAGE_PATH
 export JAVA_HOME=/usr/lib/jvm/java-6-openjdk/
 
 
@@ -121,7 +129,7 @@ export JAVA_HOME=/usr/lib/jvm/java-6-openjdk-amd64
 
 COUNT=$(cat /proc/cpuinfo | grep 'processor' | wc -l)
 COUNT=$(echo "$COUNT*2" | bc)
-export ROS_PARALLEL_JOBS=-j$COUNT
+export ROS_PARALLEL_JOBS=$COUNT
 
-source ~/git/care-o-bot_catkin/devel/setup.bash
-
+#source /opt/ros/groovy/setup.bash
+#source /u/robot/git/care-o-bot_catkin/devel/setup.bash
